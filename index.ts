@@ -3,10 +3,11 @@ import express from 'express';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+// Load environment variables from .env.local or .env
+dotenv.config({ path: path.join(__dirname, '.env.local') });
 
 // Helper to recursively get all .js files in a directory
 async function getApiFiles(dir: string): Promise<string[]> {
