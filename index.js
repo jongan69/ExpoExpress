@@ -24,10 +24,14 @@ async function getApiFiles(dir) {
 // Convert Express req to Fetch API Request
 function expressToFetchRequest(req) {
     const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    const headers = Object.assign({}, req.headers);
+    if (!['GET', 'HEAD'].includes(req.method)) {
+        headers['content-type'] = 'application/json';
+    }
     const init = {
         method: req.method,
-        headers: req.headers,
-        body: ['GET', 'HEAD'].includes(req.method) ? undefined : req.body,
+        headers: headers,
+        body: ['GET', 'HEAD'].includes(req.method) ? undefined : JSON.stringify(req.body),
     };
     return new Request(url, init);
 }

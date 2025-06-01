@@ -26,10 +26,14 @@ async function getApiFiles(dir: string): Promise<string[]> {
 // Convert Express req to Fetch API Request
 function expressToFetchRequest(req: express.Request): Request {
   const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+  const headers = { ...req.headers };
+  if (!['GET', 'HEAD'].includes(req.method)) {
+    headers['content-type'] = 'application/json';
+  }
   const init: RequestInit = {
     method: req.method,
-    headers: req.headers as any,
-    body: ['GET', 'HEAD'].includes(req.method) ? undefined : req.body,
+    headers: headers as any,
+    body: ['GET', 'HEAD'].includes(req.method) ? undefined : JSON.stringify(req.body),
   };
   return new Request(url, init);
 }
